@@ -1,0 +1,25 @@
+import { useSyncExternalStore } from 'react';
+
+function subscribe(callback: () => void) {
+  window.addEventListener('online', callback);
+  window.addEventListener('offline', callback);
+  return () => {
+    window.removeEventListener('online', callback);
+    window.removeEventListener('offline', callback);
+  };
+}
+
+/**
+ * `true` while the browser has a network connection.
+ *
+ * @example
+ * const isOnline = useOnlineStatus();
+ * {!isOnline && <Banner>You are offline</Banner>}
+ */
+export function useOnlineStatus(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => navigator.onLine,
+    () => true,
+  );
+}
